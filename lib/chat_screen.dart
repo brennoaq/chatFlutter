@@ -16,7 +16,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   FirebaseUser _currentUser;
 
@@ -25,7 +25,9 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
 
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      _currentUser = user;
+      setState(() {
+        _currentUser = user;
+      });
     });
   }
 
@@ -53,13 +55,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendMessenge({String text, File imgFile}) async {
     final FirebaseUser user = await _getUser();
 
-    if (user == null ){
-      _scaffold.currentState.showSnackBar(
-       SnackBar(
-         content: Text("Não foi possivel fazer o login, Tente novamente!"),
-         backgroundColor: Colors.red,
-       )
-      );
+    if (user == null) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("Não foi possivel fazer o login, Tente novamente!"),
+        backgroundColor: Colors.red,
+      ));
     }
 
     Map<String, dynamic> data = {
@@ -87,10 +87,27 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffold,
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("ola"),
+        title: Text(_currentUser != null
+            ? 'Olá, ${_currentUser.displayName}'
+            : 'Chat App'),
+        centerTitle: true,
         elevation: 0,
+        actions: <Widget>[
+          _currentUser != null
+              ? IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    googleSignIn.signOut();
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text("Você saiu com sucesso!"),
+                    ));
+                  },
+                )
+              : Container(),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -112,7 +129,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         itemCount: documents.length,
                         reverse: true,
                         itemBuilder: (context, index) {
-                          return ChatMessage(documents[index].data);
+                          return ChatMessage(documents[index].data, true);
                         });
                 }
               },

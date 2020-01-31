@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage(this.data);
+  ChatMessage(this.data, this.mine);
 
   final Map<String, dynamic> data;
+  final bool mine;
 
   @override
   Widget build(BuildContext context) {
@@ -11,15 +12,18 @@ class ChatMessage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(data["senderPhotoUrl"]),
-            ),
-          ),
+          !mine
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(data["senderPhotoUrl"]),
+                  ),
+                )
+              : Container(),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: <Widget>[
                 data["imgFile"] != null
                     ? Image.network(
@@ -27,6 +31,7 @@ class ChatMessage extends StatelessWidget {
                         width: 250,
                       )
                     : Text(data["text"],
+                        textAlign: mine ? TextAlign.end : TextAlign.start,
                         style: TextStyle(
                           fontSize: 16,
                         )),
@@ -39,7 +44,15 @@ class ChatMessage extends StatelessWidget {
                 )
               ],
             ),
-          )
+          ),
+          mine
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(data["senderPhotoUrl"]),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
