@@ -16,7 +16,7 @@ class ChatMessage extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(data["senderPhotoUrl"]),
+                    backgroundImage: NetworkImage(data['senderPhotoUrl']),
                   ),
                 )
               : Container(),
@@ -25,18 +25,18 @@ class ChatMessage extends StatelessWidget {
               crossAxisAlignment:
                   mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: <Widget>[
-                data["imgFile"] != null
+                data['imgFile'] != null
                     ? Image.network(
-                        data["imgFile"],
+                        data['imgFile'],
                         width: 250,
                       )
-                    : Text(data["text"],
+                    : Text(data['text'],
                         textAlign: mine ? TextAlign.end : TextAlign.start,
                         style: TextStyle(
                           fontSize: 16,
                         )),
                 Text(
-                  data["senderName"],
+                  data['senderName'],
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -49,7 +49,7 @@ class ChatMessage extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(data["senderPhotoUrl"]),
+                    backgroundImage: NetworkImage(data['senderPhotoUrl']),
                   ),
                 )
               : Container(),
